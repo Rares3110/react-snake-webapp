@@ -1,10 +1,10 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import userData from "../stores/UserData";
-import {firestoreDB, storage} from "./FirebaseConnection";
+import { firestoreDB, storage } from "./FirebaseConnection";
 import { addDoc, collection, doc, DocumentData, getDocs, limit, orderBy, query, QueryDocumentSnapshot, updateDoc, startAfter, Timestamp } from "firebase/firestore";
 
-export const changeIcon = async(icon: File):Promise<boolean> => {
-    if(userData.id !== undefined) {
+export const changeIcon = async (icon: File): Promise<boolean> => {
+    if (userData.id !== undefined) {
         await uploadBytes(ref(storage, 'icons/' + userData.id), icon);
         return true;
     } else {
@@ -12,16 +12,16 @@ export const changeIcon = async(icon: File):Promise<boolean> => {
     }
 }
 
-export const getIcon = async(id: string | undefined) => {
-    if(id !== undefined) {
+export const getIcon = async (id: string | undefined) => {
+    if (id !== undefined) {
         return await getDownloadURL(ref(storage, 'icons/' + id));
     } else {
         return undefined;
     }
 }
 
-export const setUsername = async(username: string) => {
-    if(userData.id !== undefined) {
+export const setUsername = async (username: string) => {
+    if (userData.id !== undefined) {
         updateDoc(doc(firestoreDB, 'users', userData.id), {
             username: username
         }).then(() => {
@@ -31,7 +31,7 @@ export const setUsername = async(username: string) => {
 }
 
 export const addGame = (score: number, seconds: number) => {
-    if(userData.id !== undefined) {
+    if (userData.id !== undefined) {
         addDoc(collection(firestoreDB, 'users/' + userData.id + '/scores'), {
             score: score,
             seconds: seconds,
@@ -39,7 +39,7 @@ export const addGame = (score: number, seconds: number) => {
         }).then(() => {
             userData.addGame(score, seconds);
 
-            if(userData.id !== undefined)
+            if (userData.id !== undefined)
                 updateDoc(doc(firestoreDB, 'users', userData.id), {
                     maxScore: userData.maxScore,
                     secondsForMaxScore: userData.secondsForMaxScore,
@@ -49,31 +49,33 @@ export const addGame = (score: number, seconds: number) => {
     }
 }
 
-//value used to get the next batch of games
-var lastHistoryRecord: QueryDocumentSnapshot<DocumentData>;
-//value that allows requests to be made if there is anything left to retrieve
-var historyNotFull: boolean;
+// value used to get the next batch of games
+let lastHistoryRecord: QueryDocumentSnapshot<DocumentData>;
+// value that allows requests to be made if there is anything left to retrieve
+let historyNotFull: boolean;
+
 export interface HistoryElement {
     score: number,
     seconds: number,
     date: Date
 }
-export const getHistory = async(initial: boolean = true, toReturn: number):Promise<HistoryElement[]> => {
-    if(userData.id !== undefined && initial) {
+
+export const getHistory = async (initial: boolean = true, toReturn: number): Promise<HistoryElement[]> => {
+    if (userData.id !== undefined && initial) {
 
         return getDocs(query(
-            collection(firestoreDB, 'users/' + userData.id + '/scores'), 
+            collection(firestoreDB, 'users/' + userData.id + '/scores'),
             orderBy("date", "desc"),
             limit(toReturn)
         )).then((docSnap) => {
 
-            if(docSnap.docs.length < toReturn) {
+            if (docSnap.docs.length < toReturn) {
                 historyNotFull = false;
             } else {
                 historyNotFull = true;
             }
 
-            if(docSnap.docs.length > 0) {
+            if (docSnap.docs.length > 0) {
                 lastHistoryRecord = docSnap.docs[docSnap.docs.length - 1];
                 return docSnap.docs.map((doc) => doc.data()).map((value) => {
                     return {
@@ -88,20 +90,20 @@ export const getHistory = async(initial: boolean = true, toReturn: number):Promi
 
         });
 
-    } else if(userData.id !== undefined && historyNotFull) {
+    } else if (userData.id !== undefined && historyNotFull) {
 
         return getDocs(query(
-            collection(firestoreDB, 'users/' + userData.id + '/scores'), 
+            collection(firestoreDB, 'users/' + userData.id + '/scores'),
             orderBy("date", "desc"),
             startAfter(lastHistoryRecord),
             limit(toReturn)
         )).then((docSnap) => {
 
-            if(docSnap.docs.length < toReturn) {
+            if (docSnap.docs.length < toReturn) {
                 historyNotFull = false;
-           }
+            }
 
-            if(docSnap.docs.length > 0) {
+            if (docSnap.docs.length > 0) {
                 lastHistoryRecord = docSnap.docs[docSnap.docs.length - 1];
                 return docSnap.docs.map((doc) => doc.data()).map((value) => {
                     return {
@@ -129,9 +131,9 @@ export interface TopUserInfo {
     secondsForMaxScore: number,
     gamesPlayed: number
 }
-export const getTopUsersByScore = async():Promise<TopUserInfo[]> => {
+export const getTopUsersByScore = async (): Promise<TopUserInfo[]> => {
     return getDocs(query(
-        collection(firestoreDB, 'users'), 
+        collection(firestoreDB, 'users'),
         orderBy("maxScore", "desc"),
         orderBy("secondsForMaxScore"),
         limit(30)

@@ -15,14 +15,14 @@ const Footer: React.FC = () => {
                 setTimeout(() => {
                     let element = document.getElementById('TermsHeader');
 
-                    if(element) {
+                    if (element) {
                         let elementPosition = element.getBoundingClientRect().top;
                         let offsetPosition = elementPosition + window.pageYOffset - 70;
 
                         window.scrollTo({
                             top: offsetPosition,
                             behavior: "smooth"
-                       });
+                        });
                     }
                 }, 100);
             }}

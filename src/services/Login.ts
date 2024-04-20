@@ -4,7 +4,7 @@ import userData from "../stores/UserData";
 import { getIcon } from "./UserInfo";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-export const signUp = async(email: string, username: string, password: string) => {
+export const signUp = async (email: string, username: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
         setDoc(doc(firestoreDB, "users", userCredential.user.uid), {
             username: username,
@@ -22,12 +22,12 @@ export const signUp = async(email: string, username: string, password: string) =
     });
 }
 
-export const login = async(email: string, password: string) => {
+export const login = async (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
         userData.setUser(userCredential.user);
 
         getIcon(userData.id).then((value) => {
-            if(value !== undefined) {
+            if (value !== undefined) {
                 userData.setIcon(value);
             }
         });
@@ -35,7 +35,7 @@ export const login = async(email: string, password: string) => {
         getDoc(doc(firestoreDB, "users", userCredential.user.uid)).then((rez) => {
             const values = rez.data();
 
-            if(values) {
+            if (values) {
                 userData.setUsername(values.username);
 
                 userData.setGameStats(
@@ -52,7 +52,7 @@ export const login = async(email: string, password: string) => {
     });
 }
 
-export const logout = async() => {
+export const logout = async () => {
     return signOut(auth).then(() => {
         userData.removeUser();
         return true;

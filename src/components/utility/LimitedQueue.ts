@@ -1,4 +1,4 @@
-//queue that has a certain size, advantage of getting any value in the queue in O(1)
+// queue that has a certain size, advantage of getting any value in the queue in O(1)
 export class LimitedQueue<T> {
     private array: T[];
     private size: number;
@@ -20,7 +20,7 @@ export class LimitedQueue<T> {
     }
 
     push(newValue: T) {
-        if(this.activeSize < this.size) {
+        if (this.activeSize < this.size) {
             this.start = (this.start + 1) % this.size;
             this.activeSize++;
             this.array[this.start] = newValue;
@@ -30,7 +30,7 @@ export class LimitedQueue<T> {
     }
 
     pop() {
-        if(this.activeSize > 0) {
+        if (this.activeSize > 0) {
             let lastPos = this.end;
             this.end = (this.end + 1) % this.size;
             this.activeSize--;
@@ -40,8 +40,8 @@ export class LimitedQueue<T> {
         }
     }
 
-    valueFromStart(index:number = 1) {
-        if(index > 0 && index <= this.activeSize) {
+    valueFromStart(index: number = 1) {
+        if (index > 0 && index <= this.activeSize) {
             let poz = (this.start - index + 1 + this.size) % this.size;
             return this.array[poz];
         }
@@ -49,8 +49,8 @@ export class LimitedQueue<T> {
         throw Error('out of bounds');
     }
 
-    valueFromEnd(index:number = 1) {
-        if(index > 0 && index <= this.activeSize) {
+    valueFromEnd(index: number = 1) {
+        if (index > 0 && index <= this.activeSize) {
             let poz = (this.end + index - 1) % this.size;
             return this.array[poz];
         }

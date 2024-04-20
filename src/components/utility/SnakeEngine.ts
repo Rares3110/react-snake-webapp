@@ -1,5 +1,5 @@
 import { SnakePart } from "./SnakeParts";
-import { removeCoordFromArray, randomInteger, Coord, neighbour, sameCoord} from "./Utility";
+import { removeCoordFromArray, randomInteger, Coord, neighbour, sameCoord } from "./Utility";
 import { AppleTypes } from "../singular/Snake";
 import { LimitedQueue } from "./LimitedQueue";
 import userData from "../../stores/UserData";
@@ -94,11 +94,11 @@ export class SnakeEngine {
     private gameActive: boolean = false;
     private gameEnded: boolean = false;
 
-    //methods for changing the board
+    // methods for changing the board
     private changeSpikesMethod: (spikesMap: string[][]) => void;
     private changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void;
     private changePortalMethod: (position: Coord, toAdd: boolean) => void;
-    private changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
+    private changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory,
         startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void;
     private cleanMethod: () => void;
     private pauseMethod: () => void;
@@ -108,8 +108,8 @@ export class SnakeEngine {
     private startedTime: number = 0;
 
     private canChangeDirection: boolean = false;
-    private snakeInfo:{startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction}[][] = [];
-    private currentHeadOfSnake: Coord = {x: 0, y: 0};
+    private snakeInfo: { startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction }[][] = [];
+    private currentHeadOfSnake: Coord = { x: 0, y: 0 };
     private lastCall: number = 0;
 
     private leftKeyActive: boolean = false;
@@ -117,12 +117,12 @@ export class SnakeEngine {
     private rightKeyActive: boolean = false;
     private downKeyActive: boolean = false;
 
-    //getting all the methods used to change how the board looks
+    // getting all the methods used to change how the board looks
     constructor(
         changeSpikesMethod: (spikesMap: string[][]) => void,
         changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void,
         changePortalMethod: (position: Coord, toAdd: boolean) => void,
-        changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
+        changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory,
             startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void,
         cleanMethod: () => void,
         pauseMethod: () => void,
@@ -136,8 +136,8 @@ export class SnakeEngine {
         this.pauseMethod = pauseMethod;
         this.setScore = setScore;
 
-        //setting initial speed
-        if(speed !== undefined) {
+        // setting initial speed
+        if (speed !== undefined) {
             this.speed = speed;
         } else {
             this.speed = 0.27;
@@ -145,7 +145,7 @@ export class SnakeEngine {
     }
 
     static arrayPozToCoord = (poz: number) => {
-        return {y: Math.floor(poz / this.boardSize), x: poz % this.boardSize};
+        return { y: Math.floor(poz / this.boardSize), x: poz % this.boardSize };
     }
 
     static coordToArrayPoz = (coord: Coord) => {
@@ -153,7 +153,7 @@ export class SnakeEngine {
     }
 
     static inBounds = (coord: Coord) => {
-        if(coord.x < 0 || coord.y < 0 || coord.x >= this.boardSize || coord.y >= this.boardSize) {
+        if (coord.x < 0 || coord.y < 0 || coord.x >= this.boardSize || coord.y >= this.boardSize) {
             return false;
         }
 
@@ -161,75 +161,75 @@ export class SnakeEngine {
     }
 
     Start = () => {
-        //only starting the game once
-        if(!this.gameActive && !this.gameEnded){
+        // only starting the game once
+        if (!this.gameActive && !this.gameEnded) {
             this.gameActive = true;
-            if(this.setScore !== undefined)
+            if (this.setScore !== undefined)
                 this.setScore(0);
             this.NewLevel(0, 1);
         }
 
-        //starting the count
+        // starting the count
         this.startedTime = Date.now();
     }
 
     private checkKeyActive = () => {
-        if(!this.canChangeDirection) {
+        if (!this.canChangeDirection) {
             return;
         }
 
-        if(this.leftKeyActive && this.activeDirection !== SnakePart.Direction.Left && this.activeDirection !== SnakePart.Direction.Right) {
+        if (this.leftKeyActive && this.activeDirection !== SnakePart.Direction.Left && this.activeDirection !== SnakePart.Direction.Right) {
             this.canChangeDirection = false;
             this.changeSnakeDirection(SnakePart.Direction.Left);
-        } else if(this.upKeyActive && this.activeDirection !== SnakePart.Direction.Up && this.activeDirection !== SnakePart.Direction.Down) {
+        } else if (this.upKeyActive && this.activeDirection !== SnakePart.Direction.Up && this.activeDirection !== SnakePart.Direction.Down) {
             this.canChangeDirection = false;
             this.changeSnakeDirection(SnakePart.Direction.Up);
-        } else if(this.rightKeyActive && this.activeDirection !== SnakePart.Direction.Left && this.activeDirection !== SnakePart.Direction.Right) {
+        } else if (this.rightKeyActive && this.activeDirection !== SnakePart.Direction.Left && this.activeDirection !== SnakePart.Direction.Right) {
             this.canChangeDirection = false;
             this.changeSnakeDirection(SnakePart.Direction.Right);
-        } else if(this.downKeyActive && this.activeDirection !== SnakePart.Direction.Up && this.activeDirection !== SnakePart.Direction.Down) {
+        } else if (this.downKeyActive && this.activeDirection !== SnakePart.Direction.Up && this.activeDirection !== SnakePart.Direction.Down) {
             this.canChangeDirection = false;
             this.changeSnakeDirection(SnakePart.Direction.Down);
         }
     }
 
-    //input of the user
+    // input of the user
     private keyUpEventHandler = (event: KeyboardEvent) => {
-        if(event.key === 'ArrowUp' || event.key === 'w') {
+        if (event.key === 'ArrowUp' || event.key === 'w') {
             this.upKeyActive = false;
-        } else if(event.key === 'ArrowRight' || event.key === 'd') {
+        } else if (event.key === 'ArrowRight' || event.key === 'd') {
             this.rightKeyActive = false;
-        } else if(event.key === 'ArrowDown' || event.key === 's') {
+        } else if (event.key === 'ArrowDown' || event.key === 's') {
             this.downKeyActive = false;
-        } else if(event.key === 'ArrowLeft' || event.key === 'a') {
+        } else if (event.key === 'ArrowLeft' || event.key === 'a') {
             this.leftKeyActive = false;
         }
 
         this.checkKeyActive();
     }
 
-    //input of the user
+    // input of the user
     private keyDownEventHandler = (event: KeyboardEvent) => {
-        //prevents scrolling the window when playing
-        if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+        // prevents scrolling the window when playing
+        if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(event.code) > -1) {
             event.preventDefault();
         }
 
-        //checks for a direction change
-        if(event.key === 'ArrowUp' || event.key === 'w') {
+        // checks for a direction change
+        if (event.key === 'ArrowUp' || event.key === 'w') {
             this.upKeyActive = true;
-        } else if(event.key === 'ArrowRight' || event.key === 'd') {
+        } else if (event.key === 'ArrowRight' || event.key === 'd') {
             this.rightKeyActive = true;
-        } else if(event.key === 'ArrowDown' || event.key === 's') {
+        } else if (event.key === 'ArrowDown' || event.key === 's') {
             this.downKeyActive = true;
-        } else if(event.key === 'ArrowLeft' || event.key === 'a') {
+        } else if (event.key === 'ArrowLeft' || event.key === 'a') {
             this.leftKeyActive = true;
         }
 
         this.checkKeyActive();
     }
 
-    //used  for changing the head piece in the middle of it's animation
+    // used for changing the head piece in the middle of it's animation
     private changeSnakeDirection(newDirection: SnakePart.Direction) {
         this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].startDirection = SnakePart.oppositeDirection(this.activeDirection);
         this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].endDirection = newDirection;
@@ -243,37 +243,36 @@ export class SnakeEngine {
             (Date.now() - this.lastCall) / 1000);
     }
 
-    //this method is active while the snake is alive in the level
+    // this method is active while the snake is alive in the level
     private NewLevel = (level: number, appleValue: number) => {
         let levelEnded: boolean = false;
-        //cloning a matrix
+        // cloning a matrix
         let levelTiles: string[][] = JSON.parse(JSON.stringify(SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length]));
         let applesEaten: number = 0;
 
-        //adding all empty tiles in a single array
+        // adding all empty tiles in a single array
         let emptyTiles: Array<Coord> = [];
-        for(let y = 0; y < SnakeEngine.boardSize; y++)
-            for(let x = 0; x < SnakeEngine.boardSize; x++)
-                if(levelTiles[y][x] === ' ')
-                {
-                    emptyTiles.push({y: y, x: x});
+        for (let y = 0; y < SnakeEngine.boardSize; y++)
+            for (let x = 0; x < SnakeEngine.boardSize; x++)
+                if (levelTiles[y][x] === ' ') {
+                    emptyTiles.push({ y: y, x: x });
                 }
-        
-        //adding the spikes in the level
+
+        // adding the spikes in the level
         this.changeSpikesMethod(SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length]);
-        
-        //the queue for the snake parts
+
+        // the queue for the snake parts
         let queue = new LimitedQueue<Coord>(SnakeEngine.boardSize * SnakeEngine.boardSize);
         this.snakeInfo = [...Array(SnakeEngine.boardSize)].map(() => {
             return [...Array(SnakeEngine.boardSize)];
         });
-        //adding the first 2 snake pieces
+        // adding the first 2 snake pieces
         let firstTile = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
         let foundDirection = false;
-        for(let i = 0; i <= 3 && !foundDirection; i++) {
+        for (let i = 0; i <= 3 && !foundDirection; i++) {
             let secondTile = neighbour(firstTile, i);
 
-            if(SnakeEngine.inBounds(secondTile) && levelTiles[secondTile.y][secondTile.x] === ' ') {
+            if (SnakeEngine.inBounds(secondTile) && levelTiles[secondTile.y][secondTile.x] === ' ') {
                 levelTiles[firstTile.y][firstTile.x] = 'S';
                 levelTiles[secondTile.y][secondTile.x] = 'S';
                 this.activeDirection = i;
@@ -297,24 +296,24 @@ export class SnakeEngine {
                 this.changeSnakeSkinMethod(firstTile, true,
                     SnakePart.SnakePieceCategory.Leave,
                     this.snakeInfo[firstTile.y][firstTile.x].startDirection,
-                    this.snakeInfo[firstTile.y][firstTile.x].endDirection, 
+                    this.snakeInfo[firstTile.y][firstTile.x].endDirection,
                     1000000);
-                this.changeSnakeSkinMethod(secondTile, true, 
+                this.changeSnakeSkinMethod(secondTile, true,
                     SnakePart.SnakePieceCategory.Enter,
-                    this.snakeInfo[secondTile.y][secondTile.x].startDirection, 
-                    this.snakeInfo[secondTile.y][secondTile.x].endDirection, 
+                    this.snakeInfo[secondTile.y][secondTile.x].startDirection,
+                    this.snakeInfo[secondTile.y][secondTile.x].endDirection,
                     1000000);
 
                 foundDirection = true;
             }
         }
 
-        //adding apple
+        // adding apple
         let applePosition: Coord = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
         removeCoordFromArray(emptyTiles, applePosition);
         this.changeAppleMethod(applePosition, true, appleValue, AppleTypes.Normal);
 
-        //the iterations for moving
+        // the iterations for moving
         let firstIteration: boolean = true;
 
         this.pauseMethod();
@@ -326,8 +325,8 @@ export class SnakeEngine {
                 this.canChangeDirection = false;
                 this.lastCall = Date.now();
 
-                //on first iteration I just start the animation
-                if(firstIteration) {
+                // on first iteration I just start the animation
+                if (firstIteration) {
                     firstIteration = false;
                     let head = queue.valueFromStart();
                     let tail = queue.valueFromEnd();
@@ -338,7 +337,7 @@ export class SnakeEngine {
                         this.snakeInfo[head.y][head.x].endDirection,
                         this.speed);
 
-                    this.changeSnakeSkinMethod(tail, true, 
+                    this.changeSnakeSkinMethod(tail, true,
                         SnakePart.SnakePieceCategory.Leave,
                         this.snakeInfo[tail.y][tail.x].startDirection,
                         this.snakeInfo[tail.y][tail.x].endDirection,
@@ -353,30 +352,30 @@ export class SnakeEngine {
                 let newHead = neighbour(head, this.activeDirection);
                 let tail = queue.valueFromEnd();
                 let newTail = queue.valueFromEnd(2);
-                
-                //updating the snake, checking for collisions
-                if(SnakeEngine.inBounds(newHead) && (levelTiles[newHead.y][newHead.x] === ' ' ||
-                (levelTiles[newHead.y][newHead.x] === 'S' && sameCoord(newHead, tail)))) {
+
+                // updating the snake, checking for collisions
+                if (SnakeEngine.inBounds(newHead) && (levelTiles[newHead.y][newHead.x] === ' ' ||
+                    (levelTiles[newHead.y][newHead.x] === 'S' && sameCoord(newHead, tail)))) {
                     this.snakeInfo[newHead.y][newHead.x] = {
                         startDirection: SnakePart.oppositeDirection(this.activeDirection),
                         endDirection: this.activeDirection
                     }
 
-                    if(queue.actualSize > 2) {
-                        this.changeSnakeSkinMethod(head, true, 
+                    if (queue.actualSize > 2) {
+                        this.changeSnakeSkinMethod(head, true,
                             SnakePart.SnakePieceCategory.Stay,
                             this.snakeInfo[head.y][head.x].startDirection,
                             this.snakeInfo[head.y][head.x].endDirection,
                             this.speed);
                     }
 
-                    //if it eats an apple
-                    if(sameCoord(newHead, applePosition)) {
+                    // if it eats an apple
+                    if (sameCoord(newHead, applePosition)) {
                         this.changeAppleMethod(applePosition, false);
 
-                        //adding the score
-                        if(this.setScore !== undefined) {
-                            if(applesEaten < SnakeEngine.applesToAdvance) {
+                        // adding the score
+                        if (this.setScore !== undefined) {
+                            if (applesEaten < SnakeEngine.applesToAdvance) {
                                 this.score += appleValue;
                                 this.setScore(this.score);
                             } else {
@@ -387,24 +386,24 @@ export class SnakeEngine {
 
                         applesEaten++;
 
-                        if(emptyTiles.length > 0 && applesEaten === SnakeEngine.applesToAdvance) {
+                        if (emptyTiles.length > 0 && applesEaten === SnakeEngine.applesToAdvance) {
                             let portalPosition = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
                             removeCoordFromArray(emptyTiles, portalPosition);
                             this.changePortalMethod(portalPosition, true);
                             levelTiles[portalPosition.y][portalPosition.x] = 'P';
                         }
 
-                        if(emptyTiles.length > 0) {
+                        if (emptyTiles.length > 0) {
                             applePosition = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
                             removeCoordFromArray(emptyTiles, applePosition);
 
-                            if(applesEaten < SnakeEngine.applesToAdvance)
+                            if (applesEaten < SnakeEngine.applesToAdvance)
                                 this.changeAppleMethod(applePosition, true, appleValue, AppleTypes.Normal);
                             else
                                 this.changeAppleMethod(applePosition, true, Math.ceil(appleValue * 1.5), AppleTypes.Golden);
                         }
 
-                        this.changeSnakeSkinMethod(newTail, true, 
+                        this.changeSnakeSkinMethod(newTail, true,
                             SnakePart.SnakePieceCategory.Stay,
                             this.snakeInfo[newTail.y][newTail.x].startDirection,
                             this.snakeInfo[newTail.y][newTail.x].endDirection,
@@ -415,7 +414,7 @@ export class SnakeEngine {
                         this.changeSnakeSkinMethod(tail, false);
                         levelTiles[tail.y][tail.x] = ' ';
 
-                        this.changeSnakeSkinMethod(newTail, true, 
+                        this.changeSnakeSkinMethod(newTail, true,
                             SnakePart.SnakePieceCategory.Leave,
                             this.snakeInfo[newTail.y][newTail.x].startDirection,
                             this.snakeInfo[newTail.y][newTail.x].endDirection,
@@ -436,36 +435,36 @@ export class SnakeEngine {
                     this.checkKeyActive();
 
                 } else {
-                    //stoping the game
-                    if(!SnakeEngine.inBounds(newHead) || levelTiles[newHead.y][newHead.x] !== 'P') {
+                    // stoping the game
+                    if (!SnakeEngine.inBounds(newHead) || levelTiles[newHead.y][newHead.x] !== 'P') {
                         this.gameActive = false;
                         this.gameEnded = true;
                     }
                     levelEnded = true;
                 }
 
-                //after either a portal or after the game ends
-                if(levelEnded) {
+                // after either a portal or after the game ends
+                if (levelEnded) {
                     clearInterval(intervalRef);
                     document.removeEventListener('keydown', this.keyDownEventHandler);
                     document.removeEventListener('keyup', this.keyUpEventHandler);
 
-                    if(this.gameActive) {
+                    if (this.gameActive) {
                         let newAppleValue: number;
 
-                        if(level % SnakeEngine.spikeMaps.length === SnakeEngine.spikeMaps.length - 1) {
+                        if (level % SnakeEngine.spikeMaps.length === SnakeEngine.spikeMaps.length - 1) {
                             newAppleValue = appleValue + 1;
                             this.speed = Math.max(this.speed - 0.06, 0.09);
                         } else {
                             newAppleValue = appleValue;
                         }
-                        
-                        for(let y = 0; y < SnakeEngine.boardSize; y++)
-                            for(let x = 0; x < SnakeEngine.boardSize; x++)
-                                if(levelTiles[y][x] === 'S') {
-                                    this.changeSnakeSkinMethod({y: y, x: x}, false);
-                                } else if(levelTiles[y][x] === 'P') {
-                                    this.changePortalMethod({y: y, x: x}, false);
+
+                        for (let y = 0; y < SnakeEngine.boardSize; y++)
+                            for (let x = 0; x < SnakeEngine.boardSize; x++)
+                                if (levelTiles[y][x] === 'S') {
+                                    this.changeSnakeSkinMethod({ y: y, x: x }, false);
+                                } else if (levelTiles[y][x] === 'P') {
+                                    this.changePortalMethod({ y: y, x: x }, false);
                                 }
                         this.changeAppleMethod(applePosition, false);
 
@@ -473,10 +472,10 @@ export class SnakeEngine {
                             return [...Array(SnakeEngine.boardSize)];
                         });
 
-                        //going to a new level
+                        // going to a new level
                         this.NewLevel(level + 1, newAppleValue);
                     } else {
-                        if(userData.id !== undefined) {
+                        if (userData.id !== undefined) {
                             addGame(this.score, Math.floor((Date.now() - this.startedTime) / 1000));
                         }
 

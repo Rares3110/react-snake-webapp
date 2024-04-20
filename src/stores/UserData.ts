@@ -44,10 +44,10 @@ class UserData {
     }
 
     addGame(score: number, secondsForScore: number) {
-        if(this.maxScore < score) {
+        if (this.maxScore < score) {
             this.maxScore = score;
             this.secondsForMaxScore = secondsForScore;
-        } else if(this.maxScore === score) {
+        } else if (this.maxScore === score) {
             this.secondsForMaxScore = Math.min(this.secondsForMaxScore, secondsForScore);
         }
 
