@@ -1,5 +1,6 @@
-To start hosting on the local server, you can run:
+### To start hosting on the local server
 
-### `npm start`
-
-This website is a work in progress, and many things must be improved. It is not suited for commercial use and lacks the requirements to be hosted, like cookies acceptance and terms & conditions.
+```properties
+npm i
+npm run dev
+```
