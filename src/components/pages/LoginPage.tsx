@@ -6,6 +6,7 @@ import WaveImage from "../../resources/png/wave-haikei.png";
 import { useNavigate, useParams } from "react-router-dom";
 import userData from "../../stores/UserData";
 import { login, signUp } from "../../services/Login";
+import Footer from "../singular/Footer";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -143,6 +144,8 @@ const LoginPage: React.FC = () => {
                     Sign up
                 </motion.button>}
         </div>
+
+        <Footer/>
     </>);
 };
 

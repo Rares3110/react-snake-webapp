@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <footer className="flex flex-row items-center justify-center bg-[#191923] w-full h-16">
+        <footer className="flex flex-row items-center justify-center bg-[#191923] w-full h-16 mt-auto">
             <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
