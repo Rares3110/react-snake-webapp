@@ -10,22 +10,24 @@ import PortalImage from "./resources/png/portal.png";
 import TermsPage from "./components/pages/TermsPage";
 
 const App: React.FC = () => {
-	return (<div>
-		{/*load images on the start to have them ready in the game*/}
-		<img src={AppleGoldenImage} className="h-0 invisible" alt="" />
-		<img src={AppleNormalImage} className="h-0 invisible" alt="" />
-		<img src={PortalImage} className="h-0 invisible" alt="" />
+	return (
+		<>
+			{/*load images on the start to have them ready in the game*/}
+			<img src={AppleGoldenImage} className="h-0 invisible" alt="golden apple" />
+			<img src={AppleNormalImage} className="h-0 invisible" alt="apple" />
+			<img src={PortalImage} className="h-0 invisible" alt="portal" />
 
-		<Routes>
-			<Route path='/' element={<HomePage />} />
-			<Route path='/game' element={<FullSizeSnakePage />} />
-			<Route path='/leaderboards' element={<LeaderboardsPage />} />
-			<Route path='/account' element={<AccountPage />} />
-			<Route path='/terms&conditions' element={<TermsPage />} />
-			<Route path='/login/:index' element={<LoginPage />} />
-			<Route path="*" element={<Navigate to="/" />} />
-		</Routes>
-	</div>);
+			<Routes>
+				<Route path='/' element={<HomePage />} />
+				<Route path='/game' element={<FullSizeSnakePage />} />
+				<Route path='/leaderboards' element={<LeaderboardsPage />} />
+				<Route path='/account' element={<AccountPage />} />
+				<Route path='/terms&conditions' element={<TermsPage />} />
+				<Route path='/login/:index' element={<LoginPage />} />
+				<Route path="*" element={<Navigate to="/" />} />
+			</Routes>
+		</>
+	);
 }
 
 export default App;

@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
         return value.match(/(?=.*[0-9a-zA-Z]).{6,}/);
     }
 
-    return (<div className="w-full flex flex-col items-center">
+    return (<>
         <NavBar />
 
         <div className="relative mt-20 mb-[200px] flex flex-col items-center w-[360px] h-[480px] rounded-lg bg-white shadow-login-form">
@@ -143,7 +143,7 @@ const LoginPage: React.FC = () => {
                     Sign up
                 </motion.button>}
         </div>
-    </div>);
+    </>);
 };
 
 export default LoginPage;

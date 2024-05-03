@@ -61,7 +61,7 @@ const AccountPage: React.FC = observer(() => {
         return value.match(/(?=.*[0-9a-zA-Z]).{6,}/);
     }
 
-    return (<div className="flex flex-col w-full items-center">
+    return (<>
         <NavBar />
 
         <div className="flex justify-center w-[90%] flex-wrap mt-24 overflow-hidden">
@@ -214,7 +214,7 @@ const AccountPage: React.FC = observer(() => {
         </div>
 
         <div className="mt-96 w-full"><Footer /></div>
-    </div>);
+    </>);
 });
 
 export default AccountPage;
