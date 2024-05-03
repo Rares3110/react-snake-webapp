@@ -6,7 +6,9 @@ export enum TextBoxTypes {
 
 interface Props {
     label: string,
-    setValue: React.Dispatch<React.SetStateAction<string>>,
+    valueName: string,
+    value: string,
+    setValue(valueName: string, value: string): void,
     type?: TextBoxTypes,
     placeholder?: string,
     width?: string,
@@ -16,6 +18,8 @@ interface Props {
 export const TextBox: React.FC<Props> = (props) => {
     const {
         label,
+        valueName,
+        value,
         setValue,
         type = TextBoxTypes.Text,
         placeholder = '',
@@ -34,7 +38,8 @@ export const TextBox: React.FC<Props> = (props) => {
                 type={type === TextBoxTypes.Text ? "text" : "password"} placeholder={placeholder}
                 style={{ width: width }}
                 className="relative w-[260px] text-lg py-[2px] px-2 font-semibold text-midnight-blue rounded-xl z-10 border-0 focus:outline-0 focus:border-0 bg-transparent"
-                onChange={(e) => setValue(e.target.value)}
+                value={value}
+                onChange={(e) => setValue(valueName, e.target.value)}
             />
         </div>
     );
