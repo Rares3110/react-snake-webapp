@@ -64,9 +64,8 @@ const AccountPage: React.FC = observer(() => {
     return (<>
         <NavBar />
 
-        <div className="flex justify-center w-[90%] flex-wrap mt-24 overflow-hidden">
-
-            <div className="flex flex-col items-center w-[460px]">
+        <main className="flex justify-center w-[90%] flex-wrap mt-24 mb-24 overflow-hidden">
+            <section className="flex flex-col items-center w-[460px]">
                 <motion.div
                     whileHover="hover"
                     className="relative roundex-full overflow-hidden border-white border-4 w-[300px] h-[300px] rounded-full">
@@ -160,16 +159,16 @@ const AccountPage: React.FC = observer(() => {
                     }}>
                     Logout
                 </motion.button>
-            </div>
+            </section>
 
-            <div className="w-[calc(90%-460px)] min-w-[340px] flex flex-col items-center text-white font-bold">
-                <div className="flex flex-col items-center text-5xl mb-2">
-                    <div className="border-b-4 pb-2 border-white">Games Played</div>
+            <section className="w-[calc(90%-460px)] min-w-[340px] flex flex-col items-center text-white font-bold">
+                <article className="flex flex-col items-center text-5xl mb-2">
+                    <h2 className="border-b-4 pb-2 border-white">Games Played</h2>
                     {userData.gamesPlayed}
-                </div>
+                </article>
 
-                <div className="flex flex-col items-center text-5xl mt-4">
-                    <div className="border-b-4 pb-[6px] border-white mb-2">Record</div>
+                <article className="flex flex-col items-center text-5xl mt-4">
+                    <h2 className="border-b-4 pb-[6px] border-white mb-2">Record</h2>
                     <div className="text-4xl mb-2 text-green-400">
                         Score&nbsp;{userData.maxScore}
                     </div>
@@ -179,41 +178,64 @@ const AccountPage: React.FC = observer(() => {
                         {userData.secondsForMaxScore % 60 < 10 ? "0" : ""}
                         {userData.secondsForMaxScore % 60}
                     </div>
-                </div>
+                </article>
 
-                {userData.gamesPlayed > 0 ? <div className="w-full max-w-[600px] min-w-[300px] mt-8 mb-[200px]">
-                    <div className="w-full text-center text-5xl border-b-4 pb-2 border-white">History</div>
-                    {history.map((value, index) => <div key={JSON.stringify(value.date)}
-                        style={{ backgroundColor: index % 2 === 0 ? "#03896c" : "#008F7E" }}
-                        className="w-full text-white font-semibold text-xl mt-2 flex flex-wrap gap-x-5 gap-y-1 px-4 py-2 justify-around items-center rounded-xl">
-                        <div>Score {value.score}</div>
-                        <div>
-                            Time&nbsp;{Math.floor(value.seconds / 60)}:
-                            {value.seconds % 60 < 10 ? "0" : ""}
-                            {value.seconds % 60}
+                {
+                    userData.gamesPlayed > 0
+                        ?
+                        <div className="w-full max-w-[600px] min-w-[300px] mt-8 mb-[200px]">
+                            <div className="w-full text-center text-5xl border-b-4 pb-2 border-white">History</div>
+                            <ul>
+                                {
+                                    history.map((value, index) =>
+                                        <li key={JSON.stringify(value.date)}
+                                            style={{ backgroundColor: index % 2 === 0 ? "#03896c" : "#008F7E" }}
+                                            className="w-full text-white font-semibold text-xl mt-2 flex flex-wrap gap-x-5 gap-y-1 px-4 py-2 justify-around items-center rounded-xl"
+                                        >
+                                            <div>Score {value.score}</div>
+                                            <div>
+                                                Time&nbsp;{Math.floor(value.seconds / 60)}:
+                                                {value.seconds % 60 < 10 ? "0" : ""}
+                                                {value.seconds % 60}
+                                            </div>
+                                            <div>{value.date.toDateString()}</div>
+                                        </li>
+                                    )
+                                }
+                            </ul>
+
+                            {
+                                historyLeft
+                                    ?
+                                    <div className="w-full flex justify-center mt-4">
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={handleAddHistory}
+                                            className="rounded-xl w-36 pb-[6px] pt-1 shadow-button bg-green-800 text-white text-2xl font-semibold">
+                                            See more
+                                        </motion.button>
+                                    </div>
+                                    :
+                                    null
+                            }
+
+                            {
+                                (!historyLeft && !searchStarted.current)
+                                    ?
+                                    <div className="text-white font-semibold text-center text-xl w-full mt-2">All history shown</div>
+                                    :
+                                    null
+                            }
+
                         </div>
-                        <div>{value.date.toDateString()}</div>
-                    </div>)}
+                        :
+                        null
+                }
+            </section>
+        </main>
 
-                    {historyLeft ? <div className="w-full flex justify-center mt-4">
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={handleAddHistory}
-                            className="rounded-xl w-36 pb-[6px] pt-1 shadow-button bg-green-800 text-white text-2xl font-semibold">
-                            See more
-                        </motion.button>
-                    </div> : null}
-
-                    {(!historyLeft && !searchStarted.current) ?
-                        <div className="text-white font-semibold text-center text-xl w-full mt-2">All history shown</div> : null}
-
-                </div> : <div className="h-[200px]" />}
-            </div>
-
-        </div>
-
-        <div className="mt-96 w-full"><Footer /></div>
+        <Footer />
     </>);
 });
 

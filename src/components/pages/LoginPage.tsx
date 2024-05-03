@@ -71,12 +71,12 @@ const LoginPage: React.FC = () => {
     return (<>
         <NavBar />
 
-        <div className="relative mt-20 mb-[200px] flex flex-col items-center w-[360px] h-[480px] rounded-lg bg-white shadow-login-form">
-            <img src={WaveImage} className="absolute top-[-1px] h-48 w-full rotate-180 rounded-md" alt="" />
+        <main className="relative mt-20 mb-[200px] flex flex-col items-center w-[360px] h-[480px] rounded-lg bg-white shadow-login-form">
+            <img src={WaveImage} className="absolute top-[-1px] h-48 w-full rotate-180 rounded-md" alt="decoration" />
 
-            <div className="mt-5 text-3xl font-semibold text-white z-10">
+            <h1 className="mt-5 text-3xl font-semibold text-white z-10">
                 Welcome to SuperSnake!
-            </div>
+            </h1>
 
             <div className="flex rounded-xl w-[240px] mt-12 text-lg font-semibold z-10 outline outline-2 outline-midnight-blue">
                 <motion.button
@@ -86,9 +86,13 @@ const LoginPage: React.FC = () => {
                         setName("");
                         setPassword2("");
                     }}
-                    className={"relative top-0 w-1/2 rounded-xl " + (isLogin ? "text-white" : "text-midnight-blue")}>
-                    {isLogin && <motion.div layoutId="formOption" className="absolute top-0 w-full h-full ml-[-1px] rounded-xl border-midnight-blue bg-midnight-blue"/>}
-                    <div className="relative top-0">Login</div>
+                    className={"relative top-0 w-1/2 rounded-xl " + (isLogin ? "text-white" : "text-midnight-blue")}
+                >
+                    {
+                        isLogin &&
+                        <motion.div layoutId="formOption" className="absolute top-0 w-full h-full ml-[-1px] rounded-xl border-midnight-blue bg-midnight-blue" />
+                    }
+                    <span className="relative top-0">Login</span>
                 </motion.button>
 
                 <motion.button
@@ -96,56 +100,81 @@ const LoginPage: React.FC = () => {
                         setIsLogin(false);
                         setError(false);
                     }}
-                    className={"relative top-0 w-1/2 rounded-xl " + (!isLogin ? "text-white" : "text-midnight-blue")}>
-                    {!isLogin && <motion.div layoutId="formOption" className="absolute top-0 w-full h-full ml-[1px] rounded-xl border-midnight-blue bg-midnight-blue"/>}
-                    <div className="relative top-0">Sign up</div>
+                    className={"relative top-0 w-1/2 rounded-xl " + (!isLogin ? "text-white" : "text-midnight-blue")}
+                >
+                    {
+                        !isLogin &&
+                        <motion.div layoutId="formOption" className="absolute top-0 w-full h-full ml-[1px] rounded-xl border-midnight-blue bg-midnight-blue" />
+                    }
+                    <span className="relative top-0">Sign up</span>
                 </motion.button>
             </div>
 
+            {/* email */}
             <TextBox className="mt-4" label="Email" setValue={setEmail} placeholder="email@example.com" />
-            {!validateEmail(email) &&
+            {
+                !validateEmail(email) &&
                 <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Email required!</div>
             }
 
-            {!isLogin && <TextBox className="mt-4" label="Username" setValue={setName} placeholder="Username" />}
-            {(!isLogin && !validateFormValue(name)) &&
+            {/* username */}
+            {
+                !isLogin &&
+                <TextBox className="mt-4" label="Username" setValue={setName} placeholder="Username" />
+            }
+            {
+                (!isLogin && !validateFormValue(name)) &&
                 <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Username requires 6 characters!</div>
             }
 
+            {/* password */}
             <TextBox className="mt-4" label="Password" setValue={setPassword} placeholder="••••••••••" type={TextBoxTypes.Password} />
-            {!validateFormValue(password) &&
+            {
+                !validateFormValue(password) &&
                 <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Password requires 6 characters!</div>
             }
 
-            {!isLogin && <TextBox className="mt-4" label="Confirm Password" setValue={setPassword2} placeholder="••••••••••" type={TextBoxTypes.Password} />}
-            {(!isLogin && password !== password2) &&
+            {/* password confirmation */}
+            {
+                !isLogin &&
+                <TextBox className="mt-4" label="Confirm Password" setValue={setPassword2} placeholder="••••••••••" type={TextBoxTypes.Password} />
+            }
+            {
+                (!isLogin && password !== password2) &&
                 <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Passwords don't match!</div>
             }
 
-            {(error && isLogin) &&
-                <div className="absolute text-rose-800 bottom-[54px]">Email or password invalid!</div>}
-            {(error && !isLogin) &&
-                <div className="absolute text-rose-800 bottom-[54px]">Email already used!</div>}
+            {/* general validations */}
+            {
+                (error && isLogin) &&
+                <div className="absolute text-rose-800 bottom-[54px]">Email or password invalid!</div>
+            }
+            {
+                (error && !isLogin) &&
+                <div className="absolute text-rose-800 bottom-[54px]">Email already used!</div>
+            }
 
-            {isLogin ?
-                <motion.button
-                    onClick={handleLogin}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="absolute bottom-4 w-[120px] bg-midnight-blue text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
-                    Login
-                </motion.button>
-                :
-                <motion.button
-                    onClick={handleSignUp}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="absolute bottom-4 w-[120px] bg-rose-800 text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
-                    Sign up
-                </motion.button>}
-        </div>
+            {
+                isLogin ?
+                    <motion.button
+                        onClick={handleLogin}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="absolute bottom-4 w-[120px] bg-midnight-blue text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
+                        Login
+                    </motion.button>
+                    :
+                    <motion.button
+                        onClick={handleSignUp}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="absolute bottom-4 w-[120px] bg-rose-800 text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
+                        Sign up
+                    </motion.button>
+            }
+        </main>
 
-        <Footer/>
+        <Footer />
     </>);
 };
 
