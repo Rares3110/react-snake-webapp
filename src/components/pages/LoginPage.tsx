@@ -13,13 +13,15 @@ interface ILoginForm {
         name: string,
         email: string,
         password: string,
-        passwordConf: string
+        passwordConf: string,
+        consent: boolean
     },
     touched: {
         name: boolean,
         email: boolean,
         password: boolean,
-        passwordConf: boolean
+        passwordConf: boolean,
+        consent: boolean
     }
 }
 
@@ -28,13 +30,15 @@ const defaultValues: ILoginForm = {
         name: "",
         email: "",
         password: "",
-        passwordConf: ""
+        passwordConf: "",
+        consent: false
     },
     touched: {
         name: false,
         email: false,
         password: false,
-        passwordConf: false
+        passwordConf: false,
+        consent: false
     }
 }
 
@@ -80,6 +84,11 @@ const LoginPage: React.FC = () => {
     const handleSignUp = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
+        if (!loginForm.values.consent) {
+            changeValueInForm("consent", false);
+            return;
+        }
+
         if (validateEmail(loginForm.values.email) &&
             validateFormValue(loginForm.values.name) &&
             validateFormValue(loginForm.values.password) &&
@@ -106,7 +115,7 @@ const LoginPage: React.FC = () => {
         return value.match(/(?=.*[0-9a-zA-Z]).{6,}/);
     };
 
-    const changeValueInForm = (valueName: string, value: string) => {
+    const changeValueInForm = (valueName: string, value: string | boolean) => {
         setLoginForm(oldValues => {
             return {
                 values: {
@@ -246,6 +255,26 @@ const LoginPage: React.FC = () => {
                         null
                 }
 
+                {/* consent */}
+                {
+                    !isLogin ?
+                        <div className="flex flex-row-reverse items-center gap-1 mt-2">
+                            <label htmlFor="Consent" className="text-sm">
+                                I agree to the <a className="text-blue-600 hover:cursor-pointer" onClick={() => navigate('/terms&conditions')}>Terms & Conditions</a>
+                            </label>
+                            <input
+                            type="checkbox"
+                            name="Consent"
+                            className="mt-[2px]"
+                            checked={loginForm.values.consent}
+                            onChange={() => {
+                                changeValueInForm("consent", !loginForm.values.consent);
+                            }}/>
+                        </div>
+                        :
+                        null
+                }
+
                 {/* general validations */}
                 {
                     (error && isLogin) ?
@@ -256,6 +285,12 @@ const LoginPage: React.FC = () => {
                 {
                     (error && !isLogin) ?
                         <div className="absolute text-rose-800 bottom-[54px]">Email already used!</div>
+                        :
+                        null
+                }
+                {
+                    (!isLogin && loginForm.touched.consent && !loginForm.values.consent) ?
+                        <div className="absolute text-rose-800 bottom-[54px] text-center">Please accept the Terms and Conditions to create an account.</div>
                         :
                         null
                 }

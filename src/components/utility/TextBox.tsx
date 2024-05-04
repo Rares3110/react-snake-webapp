@@ -37,7 +37,7 @@ export const TextBox: React.FC<Props> = (props) => {
                 name={label}
                 type={type === TextBoxTypes.Text ? "text" : "password"} placeholder={placeholder}
                 style={{ width: width }}
-                className="relative w-[260px] text-lg py-[2px] px-2 font-semibold text-midnight-blue rounded-xl z-10 border-0 focus:outline-0 focus:border-0 bg-transparent"
+                className="relative w-[260px] text-lg py-[2px] px-2 font-semibold text-midnight-blue rounded-xl z-10 border-0 focus:outline-none focus:border-0 bg-transparent"
                 value={value}
                 onChange={(e) => setValue(valueName, e.target.value)}
             />
